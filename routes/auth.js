@@ -1,7 +1,6 @@
 const express = require("express")
 // const { useGoogleStrategy, useFacebookStrategy,useGitHubStrategy,useTwitterStrategy, isRegular } = require("../middleware/auth")
 const passport = require("passport")
-
 const Auth = require("../services/auth")
 const tokenToCookie= require("../helpers/tokenToCookie")
 const { isRegular } = require("../middleware/auth")
@@ -9,10 +8,10 @@ const { isRegular } = require("../middleware/auth")
 function auth(app){
     const router = express.Router()
     const authService = new Auth()
+
+    //middlewares
     app.use("/auth",router)
-
     app.use(passport.initialize())
-
     // passport.use(useGoogleStrategy())
     // passport.use(useFacebookStrategy())
     // passport.use(useGitHubStrategy())
@@ -22,6 +21,7 @@ function auth(app){
         done(null,user)
     })
 
+    //routes
     router.post('/login',async (req,res)=>{
         const {email,password} = req.body
         const response = await authService.login(email,password)
@@ -43,6 +43,7 @@ function auth(app){
             expires:new Date()
         }).json({loggedOut:true})
     })
+    
     router.post('/validate',isRegular,(req,res)=>{
         return res.json({logged:true,user:req.user})
     })
